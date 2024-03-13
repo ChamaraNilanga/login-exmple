@@ -13,22 +13,70 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../../CopyRight/CopyRight';
+import { useUserContext } from '../../ContextApi/UserContext';
+import { loginUser } from '../../Service/axiosService';
+import { useState } from 'react';
+import { Alert } from '@mui/material';
+import { CheckCircleOutline } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+    const { userName , setUserName } = useUserContext();
+    const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState('');
+    const navigate = useNavigate();
+
+    const setItemsToLocalStorage = (key, value) => {
+        try {
+            localStorage.setItem(key, value);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
+    const requestBody = {
+        email: data.get('email'),
+        password: data.get('password')
+    }
+    try {
+        const response = await loginUser(requestBody);
+        if( response.status === 200){
+            setMessage('User logged successfully');
+            setMessageType('success');
+            setItemsToLocalStorage('token', response.data.token);
+            setItemsToLocalStorage('userId', response.data.userId);
+            setTimeout(() => {
+                setMessage('');
+                navigate('/dashboard');
+            }, 3000);
+        }
+        console.log(response);
+    } catch (error) {
+        console.error(error);
+        setMessage('User logging failed');
+        setMessageType('error');
+    }
   };
+
+  const setUserNameValue = (userName) => {
+    setUserName(userName);
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
+        {message != "" && <Alert icon={<CheckCircleOutline fontSize="inherit" />} severity={messageType}>
+            {message}
+        </Alert>}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -54,6 +102,8 @@ export default function SignIn() {
               label="Email Address"
               name="email"
               autoComplete="email"
+              value={userName}
+              onChange={(e) => setUserNameValue(e.target.value)}
               autoFocus
             />
             <TextField

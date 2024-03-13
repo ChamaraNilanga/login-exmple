@@ -13,24 +13,58 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../../CopyRight/CopyRight';
-
-
-// TODO remove, this demo shouldn't need to reset the theme.
+import { registerUser } from '../../Service/axiosService';
+import Alert from '@mui/material/Alert';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { CheckCircleOutline } from '@mui/icons-material';
+import { useUserContext } from '../../ContextApi/UserContext';
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const { userName , setUserName } = useUserContext();
+
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    console.log(data);
+    const emailUser = data.get('email');
+    const requestBody = {
+        email: data.get('email'),
+        password: data.get('password'),
+        firstName: data.get('firstName'),
+        lastName: data.get('lastName')
+    }
+    try {
+        const response = await registerUser(requestBody);
+        if(response.status === 201 || response.status === 200){
+            setMessage('User registered successfully');
+            setMessageType('success');
+            setUserName(emailUser);
+            setTimeout(() => {
+                setMessage('');
+                navigate('/login');
+            }, 3000);
+        }
+        console.log(response);
+    } catch (error) {
+        console.error(error);
+        setMessage('User registration failed');
+        setMessageType('error');
+    }
+    
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
+        {message != "" && <Alert icon={<CheckCircleOutline fontSize="inherit" />} severity={messageType}>
+            {message}
+        </Alert>}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
