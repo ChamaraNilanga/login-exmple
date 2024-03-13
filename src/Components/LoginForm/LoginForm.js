@@ -37,6 +37,14 @@ export default function SignIn() {
         }
     }
 
+    const navigatePage = (role) => {
+        if(role === 'admin'){
+            navigate('/dashboard');
+        } else {
+            navigate('/profile');
+        }
+    };
+
     const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -57,7 +65,7 @@ export default function SignIn() {
             setItemsToLocalStorage('userId', response.data.userId);
             setTimeout(() => {
                 setMessage('');
-                navigate('/dashboard');
+                navigatePage('admin');
             }, 3000);
         }
         console.log(response);

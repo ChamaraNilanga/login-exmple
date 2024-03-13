@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import DashBoard from './Components/DashBoard/DashBoard';
 import  PrivateRoute  from './Components/PrivateRoute/PrivateRoute';
+import PublicRoute from './Components/PrivateRoute/PublicRoute';
+import Profile from './Components/Profile/Profile';
 
 function App() {
   return (
@@ -17,14 +19,23 @@ function App() {
         <UserProvider>
           <Routes>
             
-            <Route path="/login" element={<LoginForm />} />
+            <Route path="/login" element={
+              <PublicRoute>
+                <LoginForm />
+              </PublicRoute>
+                } />
             
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signup" element={
+              <PublicRoute>
+                <SignUp />
+              </PublicRoute>
+              } />
             <Route path="/dashboard" element={
                 <PrivateRoute>
                   <DashBoard />
                 </PrivateRoute>
 						}/>
+            <Route path="/profile" element={<Profile/>}/>
             {/* <Route element={<PrivateRoute />}>
                 <Route path="/dashboard" element={<DashBoard/>} />
             </Route> */}
