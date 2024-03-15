@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const BaseUrl = "https://8bc0-43-252-15-89.ngrok-free.app/api";
+const BaseUrl = "https://1228-43-252-15-89.ngrok-free.app/api";
 const addDetailsUrl =
-  "https://8bc0-43-252-15-89.ngrok-free.app/api/buses/add-bus";
+  "https://1228-43-252-15-89.ngrok-free.app/api/buses/add-bus";
 const getDetailsUrl =
-  "https://8bc0-43-252-15-89.ngrok-free.app/api/buses/get-all-buses";
+  "https://1228-43-252-15-89.ngrok-free.app/api/buses/";
 
 const token = localStorage.getItem("token");
 console.log("TOKEN : ", token);
@@ -12,6 +12,7 @@ console.log("TOKEN : ", token);
 const headers = {
   "Content-Type": "application/json",
   Authorization: `Bearer ${token}`,
+  "ngrok-skip-browser-warning":true
 };
 
 const authHeaders = () => {

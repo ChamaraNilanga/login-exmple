@@ -23,7 +23,7 @@ export default function BasicTable() {
   const getTableData = async () => {
     try {
       const response = await getDetails();
-      console.log("Response : ", response.data);
+      console.log("Response : ", response);
     } catch (error) {
       console.error(error);
     }
