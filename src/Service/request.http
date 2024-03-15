@@ -1,0 +1,10 @@
+###
+ 
+POST https://8bc0-43-252-15-89.ngrok-free.app/api/users/register
+Content-Type: application/json
+ 
+{
+    "name":"James bond",
+    "email"  :"james@gmail.com",
+     "password"  :"james@gmail.com"
+}
