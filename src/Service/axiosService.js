@@ -3,21 +3,16 @@ import axios from "axios";
 const BaseUrl = "https://8bc0-43-252-15-89.ngrok-free.app/api";
 const addDetailsUrl =
   "https://8bc0-43-252-15-89.ngrok-free.app/api/buses/add-bus";
+const getDetailsUrl =
+  "https://8bc0-43-252-15-89.ngrok-free.app/api/buses/get-all-buses";
 
 const token = localStorage.getItem("token");
 console.log("TOKEN : ", token);
-
-let config = {
-  headers: {
-    Authorization: token,
-  },
-};
 
 const headers = {
   "Content-Type": "application/json",
   Authorization: `Bearer ${token}`,
 };
-console.log(headers);
 
 const authHeaders = () => {
   let userToken = localStorage.getItem("token");
@@ -37,7 +32,11 @@ const deletePost = (id) => {
 };
 
 const addDetails = (requestBody) => {
-  return axios.post(addDetailsUrl, requestBody, headers);
+  return axios.post(addDetailsUrl, requestBody, { headers: headers });
 };
 
-export { registerUser, loginUser, deletePost, addDetails };
+const getDetails = () => {
+  return axios.get(getDetailsUrl, { headers: headers });
+};
+
+export { registerUser, loginUser, deletePost, addDetails, getDetails };

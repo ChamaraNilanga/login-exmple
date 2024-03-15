@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { useUserContext } from "../../ContextApi/UserContext";
 import BasicDatePicker from "../DatePicker/DatePicker";
+import BasicTable from "../Table/TableComponent";
 const defaultTheme = createTheme();
 
 export default function SignUp() {
@@ -33,17 +34,18 @@ export default function SignUp() {
     const data = new FormData(event.currentTarget);
     console.log(data);
     const requestBody = {
-      capacity: data.get("capacity"),
+      capacity: parseInt(data.get("capacity")),
       number: data.get("number"),
       name: data.get("name"),
       from: data.get("from"),
-      from: data.get("to"),
+      to: data.get("to"),
       journeyDate: data.get("journeyDate"),
       depature: data.get("depature"),
       arrival: data.get("arrival"),
       type: data.get("type"),
-      fare: data.get("fare"),
+      fare: parseInt(data.get("fare")),
     };
+    console.log(requestBody);
     try {
       const response = await addDetails(requestBody);
       if (response.status === 201 || response.status === 200) {
@@ -195,6 +197,7 @@ export default function SignUp() {
           </Box>
         </Box>
       </Container>
+      <BasicTable />
     </ThemeProvider>
   );
 }
