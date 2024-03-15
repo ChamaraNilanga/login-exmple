@@ -1,17 +1,43 @@
-import axios from 'axios';
+import axios from "axios";
 
-const BaseUrl = 'https://8bc0-43-252-15-89.ngrok-free.app/api';
+const BaseUrl = "https://8bc0-43-252-15-89.ngrok-free.app/api";
+const addDetailsUrl =
+  "https://8bc0-43-252-15-89.ngrok-free.app/api/buses/add-bus";
+
+const token = localStorage.getItem("token");
+console.log("TOKEN : ", token);
+
+let config = {
+  headers: {
+    Authorization: token,
+  },
+};
+
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
+};
+console.log(headers);
+
+const authHeaders = () => {
+  let userToken = localStorage.getItem("token");
+  return { headers: { Authorization: userToken } };
+};
 
 const registerUser = (requestBody) => {
-	return axios.post(`${BaseUrl}/users/register`, requestBody);
+  return axios.post(`${BaseUrl}/users/register`, requestBody);
 };
 
 const loginUser = (requestBody) => {
-	return axios.post(`${BaseUrl}/users/login`, requestBody);
+  return axios.post(`${BaseUrl}/users/login`, requestBody);
 };
 
 const deletePost = (id) => {
-	return axios.delete(`${BaseUrl}/admin/location/${id}`);
+  return axios.delete(`${BaseUrl}/admin/location/${id}`);
 };
 
-export { registerUser, loginUser, deletePost };
+const addDetails = (requestBody) => {
+  return axios.post(addDetailsUrl, requestBody, headers);
+};
+
+export { registerUser, loginUser, deletePost, addDetails };

@@ -61,7 +61,7 @@ export default function SignIn() {
         if( response.status === 200){
             setMessage('User logged successfully');
             setMessageType('success');
-            setItemsToLocalStorage('token', response.data.token);
+            setItemsToLocalStorage('token', response.data.data);
             setItemsToLocalStorage('userId', response.data.userId);
             setTimeout(() => {
                 setMessage('');
