@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Copyright from "../../CopyRight/CopyRight";
-import { addDetails, registerUser } from "../../Service/axiosService";
+import { addDetails, registerUser, updateDetails } from "../../Service/axiosService";
 import Alert from "@mui/material/Alert";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,12 +21,43 @@ import { CheckCircleOutline } from "@mui/icons-material";
 import { useUserContext } from "../../ContextApi/UserContext";
 import BasicDatePicker from "../DatePicker/DatePicker";
 import BasicTable from "../Table/TableComponent";
+import { useEffect } from "react";
+import dayjs from "dayjs";
 const defaultTheme = createTheme();
 
-export default function SignUp() {
+export default function AddForm(props) {
+  const { handleClose , busList , setBusList , updateBusRow , setUpdateBusRow } = props;
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const { userName, setUserName } = useUserContext();
+  const initialStates = {
+            name: "",
+            number: "",
+            capacity: 0,
+            from: "",
+            to: "",
+            journeyDate: "",
+            depature: "",
+            arrival: "",
+            type: "",
+            fare: 0,
+            seatsBooked: [],
+            status: "",
+            createdAt: "",
+            updatedAt: "",
+            __v: 0
+  };
+  const [updateData,setUpdateData] = useState(updateBusRow.length > 0 ? updateBusRow[0] : initialStates);
+  const [journeyDate,setJourneyDate] = useState(dayjs().format('MM/DD/YYYY'));
+  const [depature,setDepature] = useState(dayjs().format('MM/DD/YYYY'));
+  console.log("Journey Date : ", updateData.length);
+
+  const onChanges = (event) => {
+    setUpdateData({ ...updateData, [event.target.name]: event.target.value });
+    console.log(updateData);
+  };
+
+
 
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
@@ -47,15 +78,38 @@ export default function SignUp() {
     };
     console.log(requestBody);
     try {
+      if(!updateData._id){
       const response = await addDetails(requestBody);
       if (response.status === 201 || response.status === 200) {
         setMessage("Details Added successfully");
+        setBusList((prevData)=>[...prevData, {...requestBody , 
+          _id : response.data.data._id ,
+           createdAt : response.data.data.createdAt ,
+           updatedAt : response.data.data.updatedAt ,
+           __v : response.data.data.__v,
+           seatsBooked : response.data.data.seatsBooked,
+           status: response.data.data.status
+          }].reverse());
+        console.log("Bus List : ", busList.reverse());
         setMessageType("success");
         setTimeout(() => {
           setMessage("");
+          handleClose();
         }, 3000);
-      }
-      console.log(response);
+      }} else {
+        console.log("updateDataUp:",updateData);
+      const response = await updateDetails(updateData._id , updateData);
+      console.log("Response New: ", response);
+      if (response.status === 201 || 200) {
+        setMessage(response.data.message);
+        setBusList(busList.map((item) => item._id === updateData._id ? updateData : item));
+        console.log("Bus List : ", busList.reverse());
+        setMessageType("success");
+        setTimeout(() => {
+          setMessage("");
+          handleClose();
+        }, 3000);
+      }}
     } catch (error) {
       console.error(error);
       setMessage("Details not added");
@@ -76,7 +130,7 @@ export default function SignUp() {
       <Container
         component="main"
         maxWidth="md"
-        style={{ border: "2px solid black", borderRadius: "15px" }}
+        style={{ border: "2px solid black", borderRadius: "15px" , backgroundColor: "white"}}
       >
         <h2 style={{ textAlign: "center", marginBottom: "-60px" }}>
           Add Details
@@ -105,6 +159,8 @@ export default function SignUp() {
                   fullWidth
                   id="name"
                   label="Name"
+                  value={updateData._id ? updateData.name : ""}
+                  onChange={(e)=>onChanges(e)}
                   autoFocus
                 />
               </Grid>
@@ -115,6 +171,7 @@ export default function SignUp() {
                   id="number"
                   label="Number"
                   name="number"
+                  value={updateData._id? updateData.number : ""}
                   autoComplete="family-name"
                 />
               </Grid>
@@ -125,6 +182,7 @@ export default function SignUp() {
                   id="capacity"
                   label="Capacity"
                   name="capacity"
+                  value={updateData._id? updateData.capacity : ""}
                   autoComplete="email"
                   type="number"
                 />
@@ -136,6 +194,7 @@ export default function SignUp() {
                   name="from"
                   label="From"
                   type="text"
+                  value={updateData._id? updateData.from : ""}
                   id="from"
                 />
               </Grid>
@@ -145,15 +204,16 @@ export default function SignUp() {
                   fullWidth
                   name="to"
                   label="To"
+                  value={updateData._id? updateData.to : ""}
                   type="text"
                   id="to"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <BasicDatePicker text={"Journey Date"} name={"journeyDate"} />
+                <BasicDatePicker text={"Journey Date"} name={"journeyDate"} defaultValue={updateData._id? updateData.journeyDate : journeyDate}/>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <BasicDatePicker text={"Depature Date"} name={"depature"} />
+                <BasicDatePicker value={"30/03/2024"} text={"Depature Date"} name={"depature"} defaultValue={updateData._id? updateData.depature : depature}/>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -162,6 +222,7 @@ export default function SignUp() {
                   name="arrival"
                   label="Arrival"
                   type="text"
+                  value={updateData._id? updateData.arrival : ""}
                   id="arrival"
                 />
               </Grid>
@@ -172,6 +233,7 @@ export default function SignUp() {
                   name="type"
                   label="Type"
                   type="text"
+                  value={updateData._id? updateData.type : ""}
                   id="type"
                 />
               </Grid>
@@ -182,6 +244,7 @@ export default function SignUp() {
                   name="fare"
                   label="Fare"
                   type="number"
+                  value={updateData._id? updateData.fare : ""}
                   id="fare"
                 />
               </Grid>
@@ -197,7 +260,6 @@ export default function SignUp() {
           </Box>
         </Box>
       </Container>
-      <BasicTable />
     </ThemeProvider>
   );
 }

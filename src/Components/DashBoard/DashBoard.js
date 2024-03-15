@@ -3,10 +3,12 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
-import AddForm from "../Form/AddForm";
+import { useState } from "react";
+import BusListPage from "../BusListPage/BusListPage";
 
 export default function PositionedMenu() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -16,6 +18,18 @@ export default function PositionedMenu() {
     setAnchorEl(null);
     localStorage.removeItem("token");
     navigate("/login");
+  };
+
+  const handleCloseSettings = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
   };
 
   const handleNav = () => {
@@ -38,7 +52,7 @@ export default function PositionedMenu() {
         aria-labelledby="demo-positioned-button"
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseSettings}
         anchorOrigin={{
           vertical: "top",
           horizontal: "left",
@@ -49,10 +63,10 @@ export default function PositionedMenu() {
         }}
       >
         <MenuItem onClick={handleNav}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleOpenModal}>Add New Bus</MenuItem>
         <MenuItem onClick={handleClose}>Logout</MenuItem>
       </Menu>
-      <AddForm />
+        <BusListPage open={openModal} handleClose={handleCloseModal} handleOpenModal={handleOpenModal}/>
     </div>
   );
 }
