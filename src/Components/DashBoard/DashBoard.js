@@ -2,7 +2,7 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BusListPage from "../BusListPage/BusListPage";
 
@@ -36,6 +36,11 @@ export default function PositionedMenu() {
     console.log("nav");
   };
 
+  const navigateImage = () => {
+    navigate("/image")
+  };
+
+
   return (
     <div>
       <Button
@@ -65,8 +70,13 @@ export default function PositionedMenu() {
         <MenuItem onClick={handleNav}>Profile</MenuItem>
         <MenuItem onClick={handleOpenModal}>Add New Bus</MenuItem>
         <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={navigateImage}>Upload Image</MenuItem>
       </Menu>
-        <BusListPage open={openModal} handleClose={handleCloseModal} handleOpenModal={handleOpenModal}/>
+      <BusListPage
+        open={openModal}
+        handleClose={handleCloseModal}
+        handleOpenModal={handleOpenModal}
+      />
     </div>
   );
 }

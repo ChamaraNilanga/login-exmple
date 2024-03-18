@@ -11,6 +11,7 @@ import DashBoard from './Components/DashBoard/DashBoard';
 import  PrivateRoute  from './Components/PrivateRoute/PrivateRoute';
 import PublicRoute from './Components/PrivateRoute/PublicRoute';
 import Profile from './Components/Profile/Profile';
+import AddImage from './Components/AddImage/AddImage';
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
       <Router>
         <UserProvider>
           <Routes>
-            
+            <Route path='/image' element={<AddImage/>}/>
             <Route path="/login" element={
               <PublicRoute>
                 <LoginForm />
@@ -35,7 +36,8 @@ function App() {
                   <DashBoard />
                 </PrivateRoute>
 						}/>
-            <Route path="/profile" element={<Profile/>}/>
+            <Route path="/profile" element={<Profile/>}
+            />
             {/* <Route element={<PrivateRoute />}>
                 <Route path="/dashboard" element={<DashBoard/>} />
             </Route> */}
